@@ -50,7 +50,7 @@ project(nucleo-753-can-eth
 )
 
 # Find the hal753 package (version set in cmake/deps.nucleo-hal.cmake)
-find_package(nucleo ${HAL753_VERSION} REQUIRED)
+find_package(nucleo ${HAL753_CMAKE_VERSION} REQUIRED)
 
 # Create the firmware executable
 add_executable(${PROJECT_NAME}
@@ -75,7 +75,7 @@ add_executable(${PROJECT_NAME}
 # Link with hal753 library (includes QP/C and HAL drivers)
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        nucleo::h753
+        nucleo::nucleo-h753
 )
 
 # Add include directories for Active Objects and frameworks
@@ -87,8 +87,42 @@ target_include_directories(${PROJECT_NAME}
         ${CMAKE_CURRENT_SOURCE_DIR}/ao/stack_monitor
         ${CMAKE_CURRENT_SOURCE_DIR}/frameworks/qpc
         ${CMAKE_CURRENT_SOURCE_DIR}/frameworks/mongoose
+    # include paths from hal753 for hal and qpc package
+    PRIVATE
+    $<TARGET_PROPERTY:nucleo::nucleo-h753,INTERFACE_INCLUDE_DIRECTORIES>
+    $<TARGET_PROPERTY:nucleo::qpc,INTERFACE_INCLUDE_DIRECTORIES>
 )
 
+# Add compile definitions for STM32 device and USE_HAL_DRIVER
+target_compile_definitions(${PROJECT_NAME}
+    PRIVATE
+        STM32H753xx
+        USE_HAL_DRIVER
+)
+
+# set target link libraries from hal753 and qpc
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+        nucleo::nucleo-h753
+        nucleo::qpc
+)
+
+# Set compile options
+
+target_compile_options(${PROJECT_NAME}
+    PRIVATE
+        -mcpu=cortex-m7
+        -mthumb
+        -mfpu=fpv5-d16
+        -mfloat-abi=hard
+        -Os
+        -g3
+        -Wall
+        -Wextra
+        -Wpedantic
+        -Werror
+
+)
 # Set linker script
 set(LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/linker/STM32H753XX_FLASH.ld)
 target_link_options(${PROJECT_NAME}

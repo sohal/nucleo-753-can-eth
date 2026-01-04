@@ -14,6 +14,7 @@
             "hidden": true,
             "name": "local-gnuarm14.3",
             "generator": "Ninja",
+            "toolchainFile": "${sourceDir}/_deps/cmake_scripts-src/toolchains/arm_none_eabi_gcc.cmake",
             "environment": {
                 "COMPILER_ROOT_PATH": "$env{HOME}/gnuarm14.3"
             },

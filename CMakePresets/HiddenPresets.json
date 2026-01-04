@@ -35,6 +35,7 @@
             "hidden": true,
             "name": "gnuarm14.3",
             "generator": "Ninja",
+            "toolchainFile": "${sourceDir}/_deps/cmake_scripts-src/toolchains/arm_none_eabi_gcc.cmake",
             "environment": {
                 "COMPILER_ROOT_PATH": "/home/kdev/gnuarm14.3"
             },
@@ -47,6 +48,7 @@
             "hidden": true,
             "name": "atfe21.1",
             "generator": "Ninja",
+            "toolchainFile": "${sourceDir}/_deps/cmake_scripts-src/toolchains/armclang.cmake",
             "environment": {
                 "COMPILER_ROOT_PATH": "/home/kdev/atfe21.1"
             },
