@@ -27,7 +27,7 @@ This document explains the system architecture of the nucleo-753-can-eth firmwar
                │ Links against
 ┌──────────────▼──────────────────────────────────────────┐
 │                   hal753 Library                        │
-│                    (v1.0.1 Package)                     │
+│          (Version from GITHUB_BRANCH_hal753)            │
 ├─────────────────────────────────────────────────────────┤
 │  libnucleo-h753.a  │  libqpc.a  │  Headers             │
 │  ├── main.c        │  ├── QK    │  ├── stm32h7xx_hal.h │
@@ -37,7 +37,7 @@ This document explains the system architecture of the nucleo-753-can-eth firmwar
 └─────────────────────────────────────────────────────────┘
                │ Built on
 ┌──────────────▼──────────────────────────────────────────┐
-│                 STM32CubeH7 (v1.12.1)                   │
+│         STM32CubeH7 (version from hal753 package)       │
 │  ├── CMSIS (Cortex-M7 core support)                    │
 │  ├── HAL Drivers (ETH, GPIO, RNG, CRYP, etc.)         │
 │  └── Device Support Files                              │
@@ -73,21 +73,31 @@ The firmware consumes hal753 as a **prebuilt package** fetched via CPM:
 Configured in `cmake/deps.nucleo-hal.cmake`:
 
 ```cmake
+# Version controlled via CMakePresets/VersionPresets.json
+# GITHUB_BRANCH_hal753: v1.0.1 (default)
+# HAL753_VERSION extracted dynamically (v1.0.1 → 1.0.1)
+
 CPMAddPackage(
     NAME nucleo-hal
-    VERSION 1.12.1
-    URL https://github.com/sohal/hal753/releases/download/v1.0.1/nucleo-hal-1.12.1-gnuarm14.3.tar.gz
-    URL_HASH SHA256=b7763477739c3dc7180293e3fe0d049ff653cb05e1ab6ac69152fe94a5142945
+    VERSION ${HAL753_VERSION}
+    URL https://github.com/sohal/hal753/releases/download/${GITHUB_BRANCH_hal753}/nucleo-hal-${HAL753_VERSION}-gnuarm14.3.tar.gz
+    URL_HASH SHA256=${HAL753_PACKAGE_SHA256}
 )
 
-find_package(nucleo 1.12.1 REQUIRED)
+find_package(nucleo ${HAL753_VERSION} REQUIRED)
 target_link_libraries(nucleo-753-can-eth PRIVATE nucleo::h753)
 ```
+
+**Version Management**:
+- `GITHUB_BRANCH_hal753` set in `CMakePresets/VersionPresets.json`
+- Package version extracted by stripping 'v' prefix
+- SHA256 checksum verified during download
+- Toolchain-specific packages selected via `TOOLCHAIN_VARIANT`
 
 ### Package Contents
 
 ```
-nucleo-hal-1.12.1-gnuarm14.3/
+nucleo-hal-<version>-<toolchain>/  # e.g., nucleo-hal-1.0.1-gnuarm14.3
 ├── lib/
 │   ├── libnucleo-h753.a
 │   ├── libqpc.a

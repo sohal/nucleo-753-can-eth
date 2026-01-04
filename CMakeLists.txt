@@ -38,6 +38,9 @@ file(
 
 include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
 
+# Include toolchain dependency (downloads cmake_scripts with toolchain files)
+include(cmake/deps.toolchain.cmake)
+
 # Include hal753 dependency (must be before project() to set toolchain)
 include(cmake/deps.nucleo-hal.cmake)
 
@@ -46,8 +49,8 @@ project(nucleo-753-can-eth
     LANGUAGES C ASM
 )
 
-# Find the hal753 package
-find_package(nucleo 1.12.1 REQUIRED)
+# Find the hal753 package (version set in cmake/deps.nucleo-hal.cmake)
+find_package(nucleo ${HAL753_VERSION} REQUIRED)
 
 # Create the firmware executable
 add_executable(${PROJECT_NAME}

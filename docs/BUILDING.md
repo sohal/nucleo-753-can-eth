@@ -204,8 +204,16 @@ Dependencies are fetched to `_deps/` on first configure:
 ```
 _deps/
 ├── cpm/                    # CPM package manager
-├── nucleo-hal-src/        # hal753 v1.0.1 package
-└── nucleo-hal-build/      # Extracted package contents
+├── cmake_scripts-src/      # Toolchain files (v1.0.8)
+├── nucleo-hal-src/         # hal753 package (version from GITHUB_BRANCH_hal753)
+└── nucleo-hal-build/       # Extracted package contents
+```
+
+**Version Configuration** (`CMakePresets/VersionPresets.json`):
+```json
+"GITHUB_BRANCH_hal753": "v1.0.1",
+"GITHUB_BRANCH_hal753_SHA256": "b7763477739c3dc7180293e3fe0d049ff653cb05e1ab6ac69152fe94a5142945",
+"GITHUB_BRANCH_toolchain": "v1.0.8"
 ```
 
 To force re-download:
@@ -225,15 +233,19 @@ cmake --build --preset nucleo-753-can-eth-gnuarm14.3 --verbose
 
 ### hal753 Package Download Fails
 
-**Error**: "Failed to download nucleo-hal-1.12.1-gnuarm14.3.tar.gz"
+**Error**: "Failed to download nucleo-hal-<version>-<toolchain>.tar.gz"
 
 **Solution**:
 - Check internet connection
 - Verify GitHub is accessible
-- Check SHA256 checksum in `cmake/deps.nucleo-hal.cmake`
+- Verify `GITHUB_BRANCH_hal753` and `GITHUB_BRANCH_hal753_SHA256` in `CMakePresets/VersionPresets.json`
+- Check release exists: https://github.com/sohal/hal753/releases
 - Try manual download:
   ```bash
-  wget https://github.com/sohal/hal753/releases/download/v1.0.1/nucleo-hal-1.12.1-gnuarm14.3.tar.gz
+  # Example for v1.0.1 gnuarm14.3
+  wget https://github.com/sohal/hal753/releases/download/v1.0.1/nucleo-hal-1.0.1-gnuarm14.3.tar.gz
+  # Verify checksum
+  sha256sum nucleo-hal-1.0.1-gnuarm14.3.tar.gz
   ```
 
 ### Toolchain Not Found

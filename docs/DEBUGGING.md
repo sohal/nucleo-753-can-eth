@@ -266,7 +266,7 @@ void application_init(void)
 {
     printf("\r\n=== Firmware Starting ===\r\n");
     printf("QP/C version: %s\r\n", QP_VERSION_STR);
-    printf("hal753 library: v1.0.1\r\n");
+    printf("hal753 library: version from build config\r\n");
     
     QF_init();
     printf("QF initialized\r\n");

@@ -8,7 +8,7 @@ Firmware executable for STM32H753 Nucleo board with CAN and Ethernet peripheral 
 ## Overview
 
 This project demonstrates a complete firmware application using:
-- **hal753 library** (v1.0.1) - STM32H7 HAL drivers and board support
+- **hal753 library** (configurable version, default v1.0.1) - STM32H7 HAL drivers and board support
 - **QP/C framework** (v8.1.1) - Real-time event-driven architecture
 - **Mongoose** - Embedded network stack for HTTP/HTTPS
 - **Active Objects** - Blinky LED, network manager, stack monitor
@@ -140,10 +140,13 @@ No custom `main()` is needed - the hal753 library provides it.
 
 ## Dependencies
 
-- **hal753 library**: v1.0.1 ([GitHub Release](https://github.com/sohal/hal753/releases/tag/v1.0.1))
+- **hal753 library**: Version configured in `CMakePresets/VersionPresets.json` (default v1.0.1) ([GitHub Releases](https://github.com/sohal/hal753/releases))
+  - Set via `GITHUB_BRANCH_hal753` cache variable
+  - Package version extracted automatically (e.g., v1.0.1 → 1.0.1)
 - **QP/C framework**: 8.1.1 (included in hal753)
-- **STM32CubeH7**: 1.12.1 (included in hal753)
+- **STM32CubeH7**: Version matches hal753 package (included in hal753)
 - **Mongoose**: Latest embedded version
+- **cmake_scripts toolchain**: v1.0.8 (ARM GCC 14.3 / ARM Compiler 21.1)
 
 Dependencies are automatically fetched via CPM during configuration.
 
