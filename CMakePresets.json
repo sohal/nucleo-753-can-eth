@@ -1,0 +1,13 @@
+{
+    "version": 10,
+    "cmakeMinimumRequired": {
+        "major": 4,
+        "minor": 0,
+        "patch": 0
+    },
+    "include": [
+        "CMakePresets/VersionPresets.json",
+        "CMakePresets/HiddenPresets.json",
+        "CMakePresets/FirmwarePresets.json"
+    ]
+}

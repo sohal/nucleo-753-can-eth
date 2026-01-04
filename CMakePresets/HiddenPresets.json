@@ -1,0 +1,70 @@
+{
+    "version": 10,
+    "cmakeMinimumRequired": {
+        "major": 4,
+        "minor": 0,
+        "patch": 0
+    },
+    "include": [
+        "VersionPresets.json"
+    ],
+    "configurePresets": [
+        {
+            "inherits": ["versions"],
+            "hidden": true,
+            "name": "cpm",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "FETCHCONTENT_UPDATES_DISCONNECTED": "ON",
+                "FETCHCONTENT_BASE_DIR": "${sourceDir}/_deps"
+            }
+        },
+        {
+            "hidden": true,
+            "name": "debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            },
+            "inherits": [
+                "cpm"
+            ]
+        },
+        {
+            "$comment": "****************************** cross compiler gcc on docker",
+            "hidden": true,
+            "name": "gnuarm14.3",
+            "generator": "Ninja",
+            "environment": {
+                "COMPILER_ROOT_PATH": "/home/kdev/gnuarm14.3"
+            },
+            "cacheVariables": {
+                "TOOLCHAIN_VARIANT": "gnuarm14.3"
+            }
+        },
+        {
+            "$comment": "****************************** cross compiler atfe on docker",
+            "hidden": true,
+            "name": "atfe21.1",
+            "generator": "Ninja",
+            "environment": {
+                "COMPILER_ROOT_PATH": "/home/kdev/atfe21.1"
+            },
+            "cacheVariables": {
+                "TOOLCHAIN_VARIANT": "atfe21.1"
+            }
+        },
+        {
+            "hidden": true,
+            "name": "mcu",
+            "environment": {
+                "CORTEX_TYPE": "CM7"
+            },
+            "cacheVariables": {
+                "CORTEX_TYPE": "CM7",
+                "STM32_TYPE": "h7",
+                "STM32_DEVICE": "STM32H753xx"
+            }
+        }
+    ]
+}

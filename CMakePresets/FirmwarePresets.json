@@ -1,0 +1,45 @@
+{
+    "version": 10,
+    "cmakeMinimumRequired": {
+        "major": 4,
+        "minor": 0,
+        "patch": 0
+    },
+    "include": [
+        "HiddenPresets.json"
+    ],
+    "configurePresets": [
+        {
+            "inherits": [
+                "debug",
+                "mcu",
+                "gnuarm14.3"
+            ],
+            "name": "nucleo-753-can-eth-gnuarm14.3",
+            "hidden": false,
+            "displayName": "Nucleo H753 CAN+ETH firmware with ARM GCC 14.3 (Docker)",
+            "description": "Build firmware executable for STM32H753 with CAN and Ethernet support using ARM GCC 14.3 in Docker"
+        },
+        {
+            "inherits": [
+                "debug",
+                "mcu",
+                "atfe21.1"
+            ],
+            "name": "nucleo-753-can-eth-atfe21.1",
+            "hidden": false,
+            "displayName": "Nucleo H753 CAN+ETH firmware with ARM Compiler 21.1 (Docker)",
+            "description": "Build firmware executable for STM32H753 with CAN and Ethernet support using ARM Compiler for Embedded 21.1 in Docker"
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "nucleo-753-can-eth-gnuarm14.3",
+            "configurePreset": "nucleo-753-can-eth-gnuarm14.3"
+        },
+        {
+            "name": "nucleo-753-can-eth-atfe21.1",
+            "configurePreset": "nucleo-753-can-eth-atfe21.1"
+        }
+    ]
+}

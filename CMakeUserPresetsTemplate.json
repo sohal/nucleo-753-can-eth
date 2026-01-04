@@ -1,0 +1,42 @@
+{
+    "version": 10,
+    "cmakeMinimumRequired": {
+        "major": 4,
+        "minor": 0,
+        "patch": 0
+    },
+    "include": [
+        "CMakePresets/HiddenPresets.json"
+    ],
+    "configurePresets": [
+        {
+            "$comment": "****************************** local cross compiler gcc",
+            "hidden": true,
+            "name": "local-gnuarm14.3",
+            "generator": "Ninja",
+            "environment": {
+                "COMPILER_ROOT_PATH": "$env{HOME}/gnuarm14.3"
+            },
+            "cacheVariables": {
+                "TOOLCHAIN_VARIANT": "gnuarm14.3"
+            }
+        },
+        {
+            "inherits": [
+                "debug",
+                "mcu",
+                "local-gnuarm14.3"
+            ],
+            "name": "nucleo-753-can-eth-local-gnuarm14.3",
+            "hidden": false,
+            "displayName": "Nucleo H753 CAN+ETH firmware with local ARM GCC 14.3",
+            "description": "Build firmware executable for STM32H753 with CAN and Ethernet support using local ARM GCC 14.3 installation at ${HOME}/gnuarm14.3"
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "nucleo-753-can-eth-local-gnuarm14.3",
+            "configurePreset": "nucleo-753-can-eth-local-gnuarm14.3"
+        }
+    ]
+}

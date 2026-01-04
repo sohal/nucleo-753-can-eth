@@ -1,0 +1,145 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/kodezine/kdocker:latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        preset: [
+          "nucleo-753-can-eth-gnuarm14.3",
+          "nucleo-753-can-eth-atfe21.1"
+        ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fix git safe directory
+        run: |
+          git config --global --add safe.directory /__w/nucleo-753-can-eth/nucleo-753-can-eth
+
+      - name: Get version from tag
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Building version: $VERSION"
+
+      - name: Configure CMake
+        run: |
+          cmake --preset ${{ matrix.preset }}
+
+      - name: Build
+        run: |
+          cmake --build --preset ${{ matrix.preset }}
+
+      - name: Prepare release package
+        working-directory: build/${{ matrix.preset }}
+        run: |
+          # Extract toolchain from preset name
+          TOOLCHAIN=$(echo "${{ matrix.preset }}" | sed 's/nucleo-753-can-eth-//')
+          VERSION=${{ steps.version.outputs.version }}
+          
+          # Create release package directory
+          mkdir -p release-package
+          
+          # Copy firmware files with versioned names
+          cp nucleo-753-can-eth.elf release-package/nucleo-753-can-eth-${VERSION}-${TOOLCHAIN}.elf
+          cp nucleo-753-can-eth.hex release-package/nucleo-753-can-eth-${VERSION}-${TOOLCHAIN}.hex
+          cp nucleo-753-can-eth.bin release-package/nucleo-753-can-eth-${VERSION}-${TOOLCHAIN}.bin
+          cp nucleo-753-can-eth.map release-package/nucleo-753-can-eth-${VERSION}-${TOOLCHAIN}.map
+          
+          # Generate size report
+          size -B nucleo-753-can-eth.elf > release-package/nucleo-753-can-eth-${VERSION}-${TOOLCHAIN}.size.txt
+          
+          # List prepared files
+          ls -lh release-package/
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.preset }}
+          path: build/${{ matrix.preset }}/release-package/*
+          retention-days: 30
+
+  create-release:
+    needs: build-release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download all release artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+      - name: Prepare release assets
+        run: |
+          mkdir -p release-assets
+          
+          # Copy all firmware files from artifacts
+          find artifacts/ -type f \( -name "*.elf" -o -name "*.hex" -o -name "*.bin" -o -name "*.map" -o -name "*.txt" \) -exec cp {} release-assets/ \;
+          
+          # List all files
+          echo "Release assets prepared:"
+          ls -lh release-assets/
+          
+          # Generate SHA256 checksums
+          cd release-assets
+          for file in *; do
+            if [ -f "$file" ]; then
+              sha256sum "$file" > "$file.sha256"
+            fi
+          done
+          
+          # Create combined checksum file
+          sha256sum nucleo-753-can-eth-* > SHA256SUMS.txt 2>/dev/null || true
+          
+          echo ""
+          echo "SHA256 checksums:"
+          cat SHA256SUMS.txt || echo "No checksums generated"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            release-assets/*
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          body: |
+            ## Firmware Release ${{ github.ref_name }}
+            
+            Built with:
+            - ARM GCC 14.3 (gnuarm14.3)
+            - ARM Compiler for Embedded 21.1 (atfe21.1)
+            
+            ### Dependencies
+            - hal753 library: v1.0.1
+            - QP/C framework: 8.1.1
+            - STM32CubeH7: 1.12.1
+            
+            ### Included Active Objects
+            - Blinky (LED heartbeat)
+            - Mongoose (Network stack)
+            - Stack Monitor
+            
+            See [CHANGELOG.md](CHANGELOG.md) for details.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
