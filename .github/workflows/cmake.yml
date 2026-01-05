@@ -15,22 +15,22 @@ permissions:
 jobs:
   format-check:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Install formatting tools
         run: |
           pip install pre-commit
           sudo apt-get update
           sudo apt-get install -y clang-format cmake-format
-      
+
       - name: Run pre-commit checks
         run: |
           pre-commit run --all-files
@@ -72,7 +72,7 @@ jobs:
         run: |
           echo "Build artifacts:"
           ls -lh nucleo-753-can-eth.*
-          
+
           # Display firmware size
           echo ""
           echo "Firmware size:"

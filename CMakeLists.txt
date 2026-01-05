@@ -58,20 +58,20 @@ add_executable(${PROJECT_NAME}
     ao/blinky/blinky.c
     ao/mongoose/mongoose_ao.c
     ao/stack_monitor/stack_monitor_ao.c
-    
+
     # QP/C Framework Adapter (provides application_init entry point)
     frameworks/qpc/qpc-adapter.c
-    
+
     # Mongoose Network Framework
     frameworks/mongoose/mongoose.c
     frameworks/mongoose/mongoose_glue.c
     frameworks/mongoose/mongoose_impl.c
     frameworks/mongoose/mongoose_fs.c
-    
+
     # System calls (newlib stubs)
     ao/common/syscalls.c
     ao/common/sysmem.c
-    
+
     # Startup code
     linker/startup_stm32h753xx.s
 )

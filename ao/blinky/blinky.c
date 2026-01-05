@@ -47,10 +47,10 @@ void BSP_ledOff(void) {
 /* Blinky constructor */
 void Blinky_ctor(void) {
     Blinky * const me = &Blinky_inst;
-    
+
     /* Call superclass constructor */
     QActive_ctor(&me->super, Q_STATE_CAST(&Blinky_initial));
-    
+
     /* Initialize time event */
     QTimeEvt_ctorX(&me->timeEvt, &me->super, TIMEOUT_SIG, 0U);
 }
@@ -59,12 +59,12 @@ void Blinky_ctor(void) {
 /* Initial transition - arms timer for 1Hz blink (500ms intervals) */
 static QState Blinky_initial(Blinky * const me, void const * const par) {
     (void)par;  /* Unused parameter */
-    
+
     /* Arm the time event: 500ms intervals for 1Hz blink */
-    QTimeEvt_armX(&me->timeEvt, 
+    QTimeEvt_armX(&me->timeEvt,
                   BSP_TICKS_PER_SEC/2U,  /* 500ms initial timeout */
                   BSP_TICKS_PER_SEC/2U); /* 500ms periodic interval */
-    
+
     return Q_TRAN(&Blinky_off);
 }
 
@@ -72,30 +72,30 @@ static QState Blinky_initial(Blinky * const me, void const * const par) {
 /* "off" state */
 static QState Blinky_off(Blinky * const me, QEvt const * const e) {
     QState status;
-    
+
     switch (e->sig) {
         case Q_ENTRY_SIG: {
             BSP_ledOff();
             status = Q_HANDLED();
             break;
         }
-        
+
         case TIMEOUT_SIG: {
             status = Q_TRAN(&Blinky_on);
             break;
         }
-        
+
         case Q_EXIT_SIG: {
             status = Q_HANDLED();
             break;
         }
-        
+
         default: {
             status = Q_SUPER(&QHsm_top);
             break;
         }
     }
-    
+
     return status;
 }
 
@@ -103,29 +103,29 @@ static QState Blinky_off(Blinky * const me, QEvt const * const e) {
 /* "on" state */
 static QState Blinky_on(Blinky * const me, QEvt const * const e) {
     QState status;
-    
+
     switch (e->sig) {
         case Q_ENTRY_SIG: {
             BSP_ledOn();
             status = Q_HANDLED();
             break;
         }
-        
+
         case TIMEOUT_SIG: {
             status = Q_TRAN(&Blinky_off);
             break;
         }
-        
+
         case Q_EXIT_SIG: {
             status = Q_HANDLED();
             break;
         }
-        
+
         default: {
             status = Q_SUPER(&QHsm_top);
             break;
         }
     }
-    
+
     return status;
 }

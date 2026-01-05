@@ -224,7 +224,7 @@ Connect to USART3 (ST-Link Virtual COM Port):
 # Linux
 sudo screen /dev/ttyACM0 115200
 
-# macOS  
+# macOS
 screen /dev/tty.usbmodem* 115200
 
 # Windows (use PuTTY or TeraTerm)
@@ -293,7 +293,7 @@ curl http://192.168.1.100
    ```bash
    # Check protection status
    STM32_Programmer_CLI -c port=SWD -ob displ
-   
+
    # Disable read protection (ERASES FLASH!)
    STM32_Programmer_CLI -c port=SWD -ob RDP=0xAA
    ```

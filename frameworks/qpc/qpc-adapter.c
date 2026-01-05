@@ -47,10 +47,10 @@ void BSP_paint_stack(void) {
     uint32_t *stack_bottom = (uint32_t *)((uint32_t)&_estack - STACK_TOTAL_SIZE);
     uint32_t *stack_top = (uint32_t *)&_estack;
     uint32_t *current_sp;
-    
+
     /* Get current stack pointer */
     __asm volatile ("mov %0, sp" : "=r" (current_sp));
-    
+
     /* Paint from bottom to current SP with watermark pattern */
     for (uint32_t *p = stack_bottom; p < current_sp; p++) {
         *p = STACK_PATTERN;
@@ -62,14 +62,14 @@ void BSP_paint_stack(void) {
 void application_init(void) {
     /* Initialize QF framework */
     QF_init();
-    
+
     /* Initialize event pools */
     QF_poolInit(smlPoolSto, sizeof(smlPoolSto), sizeof(smlPoolSto[0]));
     QF_poolInit(medPoolBuf, sizeof(medPoolBuf), 128U);
-    
+
     /* Initialize publish-subscribe */
     QActive_psInit(subscrSto, Q_DIM(subscrSto));
-    
+
     /* Construct and start Blinky AO (Priority 1 - LED heartbeat) */
     Blinky_ctor();
     QActive_start(AO_Blinky,
@@ -78,7 +78,7 @@ void application_init(void) {
         Q_DIM(blinkyQueueSto),       /* Queue length */
         (void *)0, 0U,               /* No stack (QK shares main stack) */
         (void *)0);                  /* No initialization parameter */
-    
+
     /* Construct and start Mongoose AO (Priority 2 - Network polling) */
     MongooseAO_ctor();
     QActive_start(AO_Mongoose,
@@ -87,7 +87,7 @@ void application_init(void) {
         Q_DIM(mongooseQueueSto),     /* Queue length (64 entries) */
         (void *)0, 0U,               /* No stack (QK shares main stack) */
         (void *)0);                  /* No initialization parameter */
-    
+
     /* Construct and start Stack Monitor AO (Priority 3 - Monitoring) */
     StackMonitorAO_ctor();
     QActive_start(AO_StackMonitor,
@@ -96,7 +96,7 @@ void application_init(void) {
         Q_DIM(stackMonitorQueueSto), /* Queue length */
         (void *)0, 0U,               /* No stack (QK shares main stack) */
         (void *)0);                  /* No initialization parameter */
-    
+
     /* Transfer control to QK kernel - this function never returns */
     QF_run();
 }
@@ -107,10 +107,10 @@ void application_init(void) {
 void QF_onStartup(void) {
     /* Configure SysTick timer for BSP_TICKS_PER_SEC rate (1000Hz = 1ms) */
     SysTick_Config(SystemCoreClock / BSP_TICKS_PER_SEC);
-    
+
     /* Assign all priority bits for preemption-prio. and none to sub-prio. */
     NVIC_SetPriorityGrouping(0U);
-    
+
     /* Set SysTick priority using QP/C recommended priority */
     NVIC_SetPriority(SysTick_IRQn, QF_AWARE_ISR_CMSIS_PRI + 1U);
 }
