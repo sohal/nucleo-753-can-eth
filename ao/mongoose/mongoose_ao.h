@@ -7,21 +7,23 @@
 
 #pragma once
 
-#include "qpc.h"
 #include "../common/bsp.h"
+#include "qpc.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /* MongooseAO Active Object */
-typedef struct {
-    QActive super;       /* Inherit QActive */
-    QTimeEvt pollTimer;  /* Time event for periodic polling */
+typedef struct
+{
+    QActive  super;     /* Inherit QActive */
+    QTimeEvt pollTimer; /* Time event for periodic polling */
 } MongooseAO;
 
 /* Global opaque pointer */
-extern QActive * const AO_Mongoose;
+extern QActive* const AO_Mongoose;
 
 /* Constructor */
 void MongooseAO_ctor(void);

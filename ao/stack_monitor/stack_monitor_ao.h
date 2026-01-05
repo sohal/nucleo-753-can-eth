@@ -7,22 +7,24 @@
 
 #pragma once
 
-#include "qpc.h"
 #include "../common/bsp.h"
+#include "qpc.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /* StackMonitorAO Active Object */
-typedef struct {
-    QActive super;           /* Inherit QActive */
-    QTimeEvt checkTimer;     /* Time event for periodic stack checking */
-    uint32_t peakUsage;      /* Peak stack usage in bytes */
+typedef struct
+{
+    QActive  super;      /* Inherit QActive */
+    QTimeEvt checkTimer; /* Time event for periodic stack checking */
+    uint32_t peakUsage;  /* Peak stack usage in bytes */
 } StackMonitorAO;
 
 /* Global opaque pointer */
-extern QActive * const AO_StackMonitor;
+extern QActive* const AO_StackMonitor;
 
 /* Constructor */
 void StackMonitorAO_ctor(void);
