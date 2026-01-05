@@ -1,14 +1,35 @@
 ---
-BasedOnStyle: LLVM
-IndentWidth: 4
-TabWidth: 4
+BasedOnStyle: Microsoft
+AlignAfterOpenBracket: Align
+AlignConsecutiveMacros: 'true'
+AlignConsecutiveAssignments: 'true'
+AlignConsecutiveDeclarations: 'true'
+AlignTrailingComments: 'true'
+AllowShortBlocksOnASingleLine: 'false'
+AllowShortCaseLabelsOnASingleLine: 'false'
+BraceWrapping:
+  AfterClass:      true
+  AfterControlStatement: true
+  AfterEnum:       true
+  AfterFunction:   true
+  AfterNamespace:  true
+  AfterObjCDeclaration: true
+  AfterStruct:     true
+  AfterUnion:      true
+  BeforeCatch:     true
+  BeforeElse:      true
+  IndentBraces:    false
+  AfterCaseLabel:    true
+BreakBeforeBraces: Custom
+ColumnLimit: 140
+Cpp11BracedListStyle: 'true'
+FixNamespaceComments: 'true'
+IndentCaseLabels: 'true'
+IndentPPDirectives: BeforeHash
+IndentExternBlock: NoIndent
+PointerAlignment: Left
+SpaceInEmptyParentheses: 'false'
+SpacesInCStyleCastParentheses: 'false'
+Macros:
 UseTab: Never
-ColumnLimit: 100
-BreakBeforeBraces: Linux
-AllowShortIfStatementsOnASingleLine: false
-AllowShortLoopsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: None
-IndentCaseLabels: false
-PointerAlignment: Right
-AlignConsecutiveAssignments: false
-AlignConsecutiveDeclarations: false
+...

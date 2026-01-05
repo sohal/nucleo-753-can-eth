@@ -151,33 +151,33 @@ Defined in `frameworks/qpc/qpc-adapter.c`:
 void application_init(void)
 {
     QF_init();  // Initialize QP/C framework
-    
+
     // Create event pools
     static QEvt const *smallPoolSto[20];
     static uint8_t mediumPoolSto[20][128];
     QF_poolInit(smallPoolSto, sizeof(smallPoolSto), sizeof(smallPoolSto[0]));
     QF_poolInit(mediumPoolSto, sizeof(mediumPoolSto), sizeof(mediumPoolSto[0]));
-    
+
     // Initialize publish-subscribe
     static QSubscrList subscrSto[MAX_PUB_SIG];
     QF_psInit(subscrSto, Q_DIM(subscrSto));
-    
+
     // Construct and start Active Objects
     Blinky_ctor();
     static QEvt const *blinkyQueueSto[20];
     QActive_start(AO_Blinky, 1U, blinkyQueueSto, Q_DIM(blinkyQueueSto),
                   (void *)0, 0U, (QEvt *)0);
-    
+
     MongooseAO_ctor();
     static QEvt const *mongooseQueueSto[64];
     QActive_start(AO_Mongoose, 2U, mongooseQueueSto, Q_DIM(mongooseQueueSto),
                   (void *)0, 0U, (QEvt *)0);
-    
+
     StackMonitorAO_ctor();
     static QEvt const *stackMonitorQueueSto[10];
     QActive_start(AO_StackMonitor, 3U, stackMonitorQueueSto, Q_DIM(stackMonitorQueueSto),
                   (void *)0, 0U, (QEvt *)0);
-    
+
     QF_run();  // Transfer control to QK kernel - never returns
 }
 ```
@@ -216,7 +216,7 @@ QState Blinky_active(BlinkyAO *me, QEvt const *e) {
         case Q_ENTRY_SIG:
             QTimeEvt_armX(&me->timer, BSP_TICKS_PER_SEC / 2, 0U);  // 500ms
             return Q_RET_HANDLED;
-        
+
         case BLINKY_TIMEOUT_SIG:
             BSP_ledToggle();  // Toggle LED
             return Q_RET_HANDLED;
@@ -336,7 +336,7 @@ enum AppSignals {
     BLINKY_TIMEOUT_SIG = Q_USER_SIG,  // Blinky timer
     MONGOOSE_POLL_SIG,                 // Mongoose poll timer
     STACK_CHECK_SIG,                   // Stack monitor timer
-    
+
     MAX_PUB_SIG,     // Published signals (none currently)
     MAX_SIG          // Total number of signals
 };
@@ -370,13 +370,13 @@ CMakeLists.txt
       ├── frameworks/mongoose/mongoose_impl.c
       ├── frameworks/mongoose/mongoose_fs.c
       └── linker/startup_stm32h753xx.s
-      
+
   └─> target_link_libraries(nucleo::h753)
       ├── Links: libnucleo-h753.a
       │   └── Provides: main(), HAL drivers, peripherals
       └── Links: libqpc.a (transitively)
           └── Provides: QK, QF, QV, QActive
-      
+
   └─> target_link_options(-T linker/STM32H753XX_FLASH.ld)
       └── Memory layout, section placement
 ```

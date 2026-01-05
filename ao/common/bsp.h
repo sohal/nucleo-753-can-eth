@@ -7,15 +7,16 @@
 
 #pragma once
 
-#include "qpc.h"
 #include "main.h"
+#include "qpc.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /* BSP timing configuration */
-#define BSP_TICKS_PER_SEC    1000U  /* 1ms tick resolution */
+#define BSP_TICKS_PER_SEC 1000U /* 1ms tick resolution */
 
 /* BSP functions */
 void BSP_init(void);

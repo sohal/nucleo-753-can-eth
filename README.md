@@ -18,7 +18,7 @@ The firmware uses QP/C's Active Object pattern with the QK preemptive kernel for
 ## Features
 
 - ✅ LED heartbeat indicator (Blinky AO)
-- ✅ Mongoose HTTP/HTTPS server (Mongoose AO)  
+- ✅ Mongoose HTTP/HTTPS server (Mongoose AO)
 - ✅ Stack usage monitoring with 90% threshold alerts (Stack Monitor AO)
 - ✅ Ethernet connectivity via STM32H7 ETH peripheral
 - ✅ CAN bus support (ready for extension)

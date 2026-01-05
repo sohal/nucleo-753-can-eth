@@ -128,7 +128,7 @@ Artifacts are generated in `build/nucleo-753-can-eth-local-gnuarm14.3/`:
 ```
 nucleo-753-can-eth.elf    # ELF executable (114 KB typical)
 nucleo-753-can-eth.hex    # Intel HEX format
-nucleo-753-can-eth.bin    # Raw binary format  
+nucleo-753-can-eth.bin    # Raw binary format
 nucleo-753-can-eth.map    # Linker map file
 ```
 

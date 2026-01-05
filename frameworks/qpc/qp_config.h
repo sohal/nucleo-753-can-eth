@@ -6,7 +6,8 @@
 #pragma once
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /* QP Configuration Options */
@@ -19,8 +20,8 @@ extern "C" {
 /* Note: Set via CMake configuration */
 
 /* Memory pool configuration */
-#define QF_MAX_ACTIVE 16    // Maximum number of active objects
-#define QF_MAX_EPOOL 3      // Maximum number of event pools
+#define QF_MAX_ACTIVE    16 // Maximum number of active objects
+#define QF_MAX_EPOOL     3  // Maximum number of event pools
 #define QF_MAX_TICK_RATE 1  // Number of clock tick rates (1 for system tick)
 
 /* Event queue configuration */
@@ -37,4 +38,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-

@@ -53,19 +53,19 @@ jobs:
           # Extract toolchain from preset name
           TOOLCHAIN=$(echo "${{ matrix.preset }}" | sed 's/nucleo-753-can-eth-//')
           VERSION=${{ steps.version.outputs.version }}
-          
+
           # Create release package directory
           mkdir -p release-package
-          
+
           # Copy firmware files with versioned names
           cp nucleo-753-can-eth.elf release-package/nucleo-753-can-eth-${VERSION}-${TOOLCHAIN}.elf
           cp nucleo-753-can-eth.hex release-package/nucleo-753-can-eth-${VERSION}-${TOOLCHAIN}.hex
           cp nucleo-753-can-eth.bin release-package/nucleo-753-can-eth-${VERSION}-${TOOLCHAIN}.bin
           cp nucleo-753-can-eth.map release-package/nucleo-753-can-eth-${VERSION}-${TOOLCHAIN}.map
-          
+
           # Generate size report
           size -B nucleo-753-can-eth.elf > release-package/nucleo-753-can-eth-${VERSION}-${TOOLCHAIN}.size.txt
-          
+
           # List prepared files
           ls -lh release-package/
 
@@ -92,14 +92,14 @@ jobs:
       - name: Prepare release assets
         run: |
           mkdir -p release-assets
-          
+
           # Copy all firmware files from artifacts
           find artifacts/ -type f \( -name "*.elf" -o -name "*.hex" -o -name "*.bin" -o -name "*.map" -o -name "*.txt" \) -exec cp {} release-assets/ \;
-          
+
           # List all files
           echo "Release assets prepared:"
           ls -lh release-assets/
-          
+
           # Generate SHA256 checksums
           cd release-assets
           for file in *; do
@@ -107,10 +107,10 @@ jobs:
               sha256sum "$file" > "$file.sha256"
             fi
           done
-          
+
           # Create combined checksum file
           sha256sum nucleo-753-can-eth-* > SHA256SUMS.txt 2>/dev/null || true
-          
+
           echo ""
           echo "SHA256 checksums:"
           cat SHA256SUMS.txt || echo "No checksums generated"
@@ -125,21 +125,21 @@ jobs:
           generate_release_notes: true
           body: |
             ## Firmware Release ${{ github.ref_name }}
-            
+
             Built with:
             - ARM GCC 14.3 (gnuarm14.3)
             - ARM Compiler for Embedded 21.1 (atfe21.1)
-            
+
             ### Dependencies
             - hal753 library: v1.0.1
             - QP/C framework: 8.1.1
             - STM32CubeH7: 1.12.1
-            
+
             ### Included Active Objects
             - Blinky (LED heartbeat)
             - Mongoose (Network stack)
             - Stack Monitor
-            
+
             See [CHANGELOG.md](CHANGELOG.md) for details.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

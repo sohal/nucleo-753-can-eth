@@ -12,11 +12,11 @@ extern "C"
 {
 #endif
 
-#include "qpc.h"
 #include "main.h"
+#include "qpc.h"
 
 /* Blinky Active Object */
-extern QActive * const AO_Blinky;
+extern QActive* const AO_Blinky;
 
 /* Blinky constructor */
 void Blinky_ctor(void);

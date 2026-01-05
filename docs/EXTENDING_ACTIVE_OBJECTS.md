@@ -87,13 +87,13 @@ static QState MyCustomAO_active(MyCustomAO * const me, QEvt const * const e);
 // Constructor
 void MyCustomAO_ctor(void) {
     MyCustomAO *me = &l_myCustomAO;
-    
+
     // Call QActive constructor
     QActive_ctor(&me->super, Q_STATE_CAST(&MyCustomAO_initial));
-    
+
     // Initialize timer event
     QTimeEvt_ctorX(&me->timer, &me->super, MY_CUSTOM_TIMEOUT_SIG, 0U);
-    
+
     // Initialize state variables
     me->counter = 0;
 }
@@ -101,10 +101,10 @@ void MyCustomAO_ctor(void) {
 // Initial pseudostate - runs once on AO start
 static QState MyCustomAO_initial(MyCustomAO * const me, QEvt const * const e) {
     (void)e;  // Unused parameter
-    
+
     // Subscribe to published signals if needed
     // QActive_subscribe(&me->super, SOME_PUBLISHED_SIG);
-    
+
     // Transition to active state
     return Q_TRAN(&MyCustomAO_active);
 }
@@ -112,7 +112,7 @@ static QState MyCustomAO_initial(MyCustomAO * const me, QEvt const * const e) {
 // Active state - handles events
 static QState MyCustomAO_active(MyCustomAO * const me, QEvt const * const e) {
     QState status;
-    
+
     switch (e->sig) {
         case Q_ENTRY_SIG: {
             // Arm timer on entry: 1 second periodic
@@ -120,42 +120,42 @@ static QState MyCustomAO_active(MyCustomAO * const me, QEvt const * const e) {
             status = Q_RET_HANDLED;
             break;
         }
-        
+
         case Q_EXIT_SIG: {
             // Disarm timer on exit
             QTimeEvt_disarm(&me->timer);
             status = Q_RET_HANDLED;
             break;
         }
-        
+
         case MY_CUSTOM_TIMEOUT_SIG: {
             // Handle periodic timeout
             me->counter++;
-            
+
             // Example: Do something every 10 seconds
             if ((me->counter % 10) == 0) {
                 // Publish an event, call a function, etc.
                 QF_PUBLISH(Q_NEW(QEvt, MY_CUSTOM_EVENT_SIG), me);
             }
-            
+
             status = Q_RET_HANDLED;
             break;
         }
-        
+
         case MY_CUSTOM_EVENT_SIG: {
             // Handle custom event
             // Process the event...
             status = Q_RET_HANDLED;
             break;
         }
-        
+
         default: {
             // Delegate unhandled events to superstate
             status = Q_SUPER(&QHsm_top);
             break;
         }
     }
-    
+
     return status;
 }
 ```
@@ -169,12 +169,12 @@ enum AppSignals {
     BLINKY_TIMEOUT_SIG = Q_USER_SIG,
     MONGOOSE_POLL_SIG,
     STACK_CHECK_SIG,
-    
+
     // Your custom signals
     MY_CUSTOM_TIMEOUT_SIG,      // Timer for your AO
     MY_CUSTOM_EVENT_SIG,        // Custom event
     MY_CUSTOM_DATA_READY_SIG,   // Data ready event
-    
+
     MAX_PUB_SIG,    // Last published signal (if any)
     MAX_SIG         // Total number of signals
 };
@@ -259,31 +259,31 @@ Modify `frameworks/qpc/qpc-adapter.c`:
 void application_init(void)
 {
     QF_init();
-    
+
     // ... existing event pool and pub-sub init ...
-    
+
     // Existing AOs
     Blinky_ctor();
     static QEvt const *blinkyQueueSto[20];
     QActive_start(AO_Blinky, 1U, blinkyQueueSto, Q_DIM(blinkyQueueSto),
                   (void *)0, 0U, (QEvt *)0);
-    
+
     MongooseAO_ctor();
     static QEvt const *mongooseQueueSto[64];
     QActive_start(AO_Mongoose, 2U, mongooseQueueSto, Q_DIM(mongooseQueueSto),
                   (void *)0, 0U, (QEvt *)0);
-    
+
     StackMonitorAO_ctor();
     static QEvt const *stackMonitorQueueSto[10];
     QActive_start(AO_StackMonitor, 3U, stackMonitorQueueSto, Q_DIM(stackMonitorQueueSto),
                   (void *)0, 0U, (QEvt *)0);
-    
+
     // YOUR NEW AO - Priority 4
     MyCustomAO_ctor();
     static QEvt const *myCustomQueueSto[16];
     QActive_start(AO_MyCustom, 4U, myCustomQueueSto, Q_DIM(myCustomQueueSto),
                   (void *)0, 0U, (QEvt *)0);
-    
+
     QF_run();
 }
 ```
@@ -299,7 +299,7 @@ add_executable(${PROJECT_NAME}
     ao/mongoose/mongoose_ao.c
     ao/stack_monitor/stack_monitor_ao.c
     ao/my_custom_ao/my_custom_ao.c        # ← ADD THIS
-    
+
     # ... rest of sources
 )
 
@@ -438,13 +438,13 @@ static QState CANHandler_active(CANHandlerAO *me, QEvt const *e) {
             QTimeEvt_armX(&me->pollTimer, BSP_TICKS_PER_SEC / 100,
                           BSP_TICKS_PER_SEC / 100);
             return Q_RET_HANDLED;
-        
+
         case CAN_POLL_SIG:
             // Check for CAN messages
             // HAL_CAN_GetRxMessage(...);
             // If message received, publish event
             return Q_RET_HANDLED;
-        
+
         case CAN_RX_SIG: {
             CANRxEvt const *rx = (CANRxEvt const *)e;
             me->rxCount++;
@@ -490,12 +490,12 @@ target_include_directories(${PROJECT_NAME}
 
 void application_init(void) {
     // ... existing initialization ...
-    
+
     CANHandler_ctor();
     static QEvt const *canQueueSto[32];
     QActive_start(AO_CANHandler, 5U, canQueueSto, Q_DIM(canQueueSto),
                   (void *)0, 0U, (QEvt *)0);
-    
+
     QF_run();
 }
 ```

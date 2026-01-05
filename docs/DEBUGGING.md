@@ -267,17 +267,17 @@ void application_init(void)
     printf("\r\n=== Firmware Starting ===\r\n");
     printf("QP/C version: %s\r\n", QP_VERSION_STR);
     printf("hal753 library: version from build config\r\n");
-    
+
     QF_init();
     printf("QF initialized\r\n");
-    
+
     // ... initialize AOs ...
     printf("Blinky AO started (priority %d)\r\n", 1);
     printf("Mongoose AO started (priority %d)\r\n", 2);
     printf("Stack Monitor AO started (priority %d)\r\n", 3);
-    
+
     printf("=== System Ready ===\r\n\r\n");
-    
+
     QF_run();  // Never returns
 }
 ```

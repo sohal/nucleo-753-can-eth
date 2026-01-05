@@ -286,7 +286,7 @@ void application_init(void) {
     // Reduce pool sizes if events are small and infrequent
     static QEvt const *smallPoolSto[10];      // Was: 20
     static uint8_t mediumPoolSto[10][64];     // Was: 20x128
-    
+
     QF_poolInit(smallPoolSto, sizeof(smallPoolSto), sizeof(smallPoolSto[0]));
     QF_poolInit(mediumPoolSto, sizeof(mediumPoolSto), sizeof(mediumPoolSto[0]));
 }
@@ -411,21 +411,21 @@ Runtime measurement using watermark:
 uint32_t BSP_check_stack_watermark(void) {
     extern uint32_t __stack_start__;
     extern uint32_t __stack_end__;
-    
+
     uint32_t *stack_ptr = &__stack_start__;
     uint32_t *stack_top = &__stack_end__;
     uint32_t unused_words = 0;
-    
+
     // Count 0xDEADBEEF words
     while (*stack_ptr == 0xDEADBEEF && stack_ptr < stack_top) {
         unused_words++;
         stack_ptr++;
     }
-    
+
     uint32_t stack_size = (uint32_t)stack_top - (uint32_t)&__stack_start__;
     uint32_t used_bytes = stack_size - (unused_words * 4);
     uint32_t percent_used = (used_bytes * 100) / stack_size;
-    
+
     return percent_used;
 }
 ```

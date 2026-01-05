@@ -16,7 +16,7 @@ uint64_t mg_millis(void) {
 bool mg_random(void *buf, size_t len) {
   extern RNG_HandleTypeDef hrng;
   uint8_t *p = (uint8_t *)buf;
-  
+
   for (size_t i = 0; i < len; i += sizeof(uint32_t)) {
     uint32_t random_number = 0;
     if (HAL_RNG_GenerateRandomNumber(&hrng, &random_number) != HAL_OK) {
