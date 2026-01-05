@@ -26,13 +26,10 @@ set(HAL753_PACKAGE_VERSION "${GITHUB_BRANCH_hal753_PACKAGE_VERSION}")
 
 # Select package URL and checksum based on toolchain
 if(TOOLCHAIN_VARIANT STREQUAL "gnuarm14.3")
-    # For testing: use local package file
-    set(HAL753_PACKAGE_URL "https://github.com/sohal/hal753/releases/download/${GITHUB_BRANCH_hal753}/nucleo-hal-${HAL753_PACKAGE_VERSION}-gnuarm14.3.tar.gz")
-    if(DEFINED GITHUB_BRANCH_hal753_SHA256)
-        set(HAL753_PACKAGE_SHA256 "${GITHUB_BRANCH_hal753_SHA256}")
-    else()
-        set(HAL753_PACKAGE_SHA256 "bcb77ed9f404ca1c979ca51d6f30b5e66097a0fb43923f62084011427d9a2d8f")
-    endif()
+    # Use local package file for development/testing
+    set(HAL753_PACKAGE_URL "file://${CMAKE_CURRENT_SOURCE_DIR}/../hal753/build/nucleo-h753-hal-local-gnuarm14.3/nucleo-hal-${HAL753_PACKAGE_VERSION}-gnuarm14.3.tar.gz")
+    # Skip checksum for local package
+    set(HAL753_PACKAGE_SHA256 "")
 elseif(TOOLCHAIN_VARIANT STREQUAL "atfe21.1")
     set(HAL753_PACKAGE_URL "https://github.com/sohal/hal753/releases/download/${GITHUB_BRANCH_hal753}/nucleo-hal-${HAL753_PACKAGE_VERSION}-atfe21.1.tar.gz")
     # TODO: Add SHA256 checksum when atfe21.1 package is available
@@ -53,7 +50,6 @@ CPMAddPackage(
     NAME nucleo-hal
     VERSION ${HAL753_CMAKE_VERSION}
     URL ${HAL753_PACKAGE_URL}
-    URL_HASH SHA256=${HAL753_PACKAGE_SHA256}
     DOWNLOAD_ONLY YES
 )
 

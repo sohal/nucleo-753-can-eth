@@ -5,6 +5,30 @@
 // Default mock implementation of the API callbacks
 
 #include "mongoose_glue.h"
+#include "stm32h7xx_hal.h"
+
+// Custom time function for Mongoose - returns milliseconds since boot
+uint64_t mg_millis(void) {
+  return HAL_GetTick();
+}
+
+// Custom random function for Mongoose - fills buffer with random bytes
+bool mg_random(void *buf, size_t len) {
+  extern RNG_HandleTypeDef hrng;
+  uint8_t *p = (uint8_t *)buf;
+  
+  for (size_t i = 0; i < len; i += sizeof(uint32_t)) {
+    uint32_t random_number = 0;
+    if (HAL_RNG_GenerateRandomNumber(&hrng, &random_number) != HAL_OK) {
+      return false;
+    }
+    size_t remaining = len - i;
+    size_t to_copy = (remaining < sizeof(uint32_t)) ? remaining : sizeof(uint32_t);
+    memcpy(&p[i], &random_number, to_copy);
+  }
+  return true;
+}
+
 static struct leds s_leds = {false, false, false};
 void glue_get_leds(struct leds *data) {
   *data = s_leds;  // Sync with your device

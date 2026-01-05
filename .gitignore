@@ -79,3 +79,7 @@ Thumbs.db
 
 # CMake User Presets (local toolchain configuration)
 CMakeUserPresets.json
+
+# ignore graphviz files
+*.dot*
+

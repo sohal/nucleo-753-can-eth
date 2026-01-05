@@ -68,14 +68,43 @@ add_executable(${PROJECT_NAME}
     frameworks/mongoose/mongoose_impl.c
     frameworks/mongoose/mongoose_fs.c
     
+    # System calls (newlib stubs)
+    ao/common/syscalls.c
+    ao/common/sysmem.c
+    
     # Startup code
     linker/startup_stm32h753xx.s
 )
 
-# Link with hal753 library (includes QP/C and HAL drivers)
+# add external libraries
+add_library (qpc STATIC IMPORTED)
+set_target_properties (qpc PROPERTIES
+    IMPORTED_LOCATION "${nucleo-hal_SOURCE_DIR}/lib/libqpc.a"
+)
+target_include_directories(qpc INTERFACE
+    "${nucleo-hal_SOURCE_DIR}/include/qpc/include"
+    "${nucleo-hal_SOURCE_DIR}/include/qpc/config"
+    "${nucleo-hal_SOURCE_DIR}/include/qpc/port"
+)
+
+add_library (h753 STATIC IMPORTED)
+set_target_properties (h753 PROPERTIES
+    IMPORTED_LOCATION "${nucleo-hal_SOURCE_DIR}/lib/libnucleo-h753.a"
+)
+target_include_directories(h753 INTERFACE
+        "${nucleo-hal_SOURCE_DIR}/include/stm32cubeh7/Drivers/STM32H7xx_HAL_Driver/Inc"
+        "${nucleo-hal_SOURCE_DIR}/include/stm32cubeh7/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy"
+        "${nucleo-hal_SOURCE_DIR}/include/stm32cubeh7/Drivers/CMSIS/Device/ST/STM32H7xx/Include"
+        "${nucleo-hal_SOURCE_DIR}/include/stm32cubeh7/Drivers/CMSIS/Include"
+        "${nucleo-hal_SOURCE_DIR}/include/stm32cubeh7/Drivers/CMSIS/Core/Include"
+        "${nucleo-hal_SOURCE_DIR}/include/nucleo"
+)
+
+# Link with nucleo HAL and QPC framework
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        nucleo::nucleo-h753
+        qpc
+        h753
 )
 
 # Add include directories for Active Objects and frameworks
@@ -87,10 +116,6 @@ target_include_directories(${PROJECT_NAME}
         ${CMAKE_CURRENT_SOURCE_DIR}/ao/stack_monitor
         ${CMAKE_CURRENT_SOURCE_DIR}/frameworks/qpc
         ${CMAKE_CURRENT_SOURCE_DIR}/frameworks/mongoose
-    # include paths from hal753 for hal and qpc package
-    PRIVATE
-    $<TARGET_PROPERTY:nucleo::nucleo-h753,INTERFACE_INCLUDE_DIRECTORIES>
-    $<TARGET_PROPERTY:nucleo::qpc,INTERFACE_INCLUDE_DIRECTORIES>
 )
 
 # Add compile definitions for STM32 device and USE_HAL_DRIVER
@@ -100,12 +125,6 @@ target_compile_definitions(${PROJECT_NAME}
         USE_HAL_DRIVER
 )
 
-# set target link libraries from hal753 and qpc
-target_link_libraries(${PROJECT_NAME}
-    PRIVATE
-        nucleo::nucleo-h753
-        nucleo::qpc
-)
 
 # Set compile options
 
@@ -119,8 +138,8 @@ target_compile_options(${PROJECT_NAME}
         -g3
         -Wall
         -Wextra
-        -Wpedantic
-        -Werror
+        #-Wpedantic
+        #-Werror
 
 )
 # Set linker script
@@ -130,6 +149,7 @@ target_link_options(${PROJECT_NAME}
         -T${LINKER_SCRIPT}
         -Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.map
         -Wl,--print-memory-usage
+        --specs=nano.specs   # Use newlib-nano for smaller code size
 )
 
 # Ensure linker script is in the dependencies

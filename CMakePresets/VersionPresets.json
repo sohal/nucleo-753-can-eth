@@ -15,9 +15,9 @@
                 "GITHUB_BRANCH_cpm_SHA256": "2020b4fc42dba44817983e06342e682ecfc3d2f484a581f11cc5731fbe4dce8a",
                 "GITHUB_BRANCH_toolchain": "v1.0.8",
                 "GITHUB_BRANCH_toolchain_SHA256": "062b599428e9d333137c9d924b5e416cc3f046b3b7a79c8e13e8fc163e8eb13f",
-                "GITHUB_BRANCH_hal753": "v1.0.2",
+                "GITHUB_BRANCH_hal753": "v1.0.3",
                 "GITHUB_BRANCH_hal753_PACKAGE_VERSION": "1.12.1",
-                "GITHUB_BRANCH_hal753_SHA256": "31adb45e478ec8090fdacafd887c581b20e6ea4b1f57072441b8029315bc3d6c"
+                "GITHUB_BRANCH_hal753_SHA256": "a7a9a97d80e8d36cf1f3cf7eb4fea75663bddec7dd3634ca5a51c771b301559c"
             }
         }
     ]
